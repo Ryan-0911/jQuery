@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>放大鏡</title>
+    <style>
+      #small {
+        width: 400px;
+        height: 300px;
+        border: 1px solid gray;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+      }
+      #small img {
+        width: 100%;
+        height: 100%;
+      }
+      #mask {
+        width: 100px;
+        height: 100px;
+        background-color: white;
+        opacity: 0.3;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none;
+      }
+      #big {
+        display: none;
+        overflow: hidden;
+        width: 400px; /*mask 寬度的4倍*/
+        height: 400px; /*mask 高度的4倍*/
+        border: 1px solid gray;
+        position: absolute;
+        top: 100px;
+        left: 550px;
+      }
+      #big img {
+        width: 1600px; /*small img 寬度的4倍*/
+        height: 1200px; /*small img 高度的4倍*/
+        position: absolute;
+      }
+    </style>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        $("#small")
+          .mouseenter(function () {
+            $("#mask, #big").show();
+          })
+          .mouseleave(function () {
+            $("#mask, #big").hide();
+          })
+          .mousemove(function (ev) {
+            // 在 jQuery 語法中 this 是被選取器選取的 DOM 物件, 而 $(this) 才是此 DOM 物件經過包裹後的 jQuery 物件
+            // ev 是事件物件，$(this) 是 small
+            // 減 50 是因為要讓滑鼠置於遮罩層中間
+            let l = ev.pageX - $(this).offset().left - 50; 
+            let t = ev.pageY - $(this).offset().top - 50;
+
+            // 控制遮罩層位置
+            if (l <= 0) {
+              l = 0;
+            }
+            if (l >= 300) {
+              l = 300;
+            }
+            if (t <= 0) {
+              t = 0;
+            }
+            if (t >= 200) {
+              t = 200;
+            }
+            $("#mask").css({
+              left: l,
+              top: t,
+            });
+
+            // 控制放大圖位置
+            $("#big img").css({
+              left: -4 * l,
+              top: -4 * t,
+            });
+          });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="small">
+      <img src="./images/christmas.jpg" alt="" />
+      <div id="mask"></div>
+    </div>
+
+    <div id="big">
+      <img src="./images/christmas.jpg" alt="" />
+    </div>
+  </body>
+</html>
